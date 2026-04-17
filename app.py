@@ -3,6 +3,7 @@ from pypdf import PdfReader
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from difflib import SequenceMatcher   # 🔥 important
 
 # Load NLP model
 nlp = spacy.load("en_core_web_sm")
@@ -58,12 +59,20 @@ def expand_keywords(text):
     return " ".join(expanded)
 
 
-# -------- SIMILARITY FUNCTION --------
+# -------- 🔥 FIXED SIMILARITY FUNCTION --------
 def calculate_similarity(resume, job_desc):
+    # TF-IDF similarity
     vectorizer = TfidfVectorizer(ngram_range=(1,2), stop_words='english')
     vectors = vectorizer.fit_transform([resume, job_desc])
-    similarity = cosine_similarity(vectors[0], vectors[1])
-    return similarity[0][0]
+    tfidf_score = cosine_similarity(vectors[0], vectors[1])[0][0]
+
+    # Sequence similarity (important fix)
+    seq_score = SequenceMatcher(None, resume, job_desc).ratio()
+
+    # Final combined score
+    final_score = (tfidf_score * 0.7) + (seq_score * 0.3)
+
+    return final_score
 
 
 # -------- MISSING SKILLS --------
@@ -80,7 +89,6 @@ if uploaded_file is not None and job_description:
 
     resume_text = extract_text_from_pdf(uploaded_file)
 
-    # Debug check
     if not resume_text.strip():
         st.error("❌ Could not extract text from PDF")
     else:
@@ -96,12 +104,22 @@ if uploaded_file is not None and job_description:
 
         st.success("Text Processed Successfully ✅")
 
-        # 🔥 IMPORTANT FIX → Use RAW TEXT for similarity
+        # 🔥 USE COMBINED SIMILARITY (FIXED)
         score = calculate_similarity(resume_text.lower(), job_description.lower())
 
-        st.subheader(f"Match Score: {round(score * 100, 2)}%")
+        # -------- 🔥 UI IMPROVEMENT --------
+        st.subheader("Match Score")
 
-        # Missing skills (use cleaned text)
+        st.progress(min(int(score * 100), 100))
+
+        if score < 0.4:
+            st.error(f"{round(score*100,2)}% - Low Match ❌")
+        elif score < 0.7:
+            st.warning(f"{round(score*100,2)}% - Moderate Match ⚠️")
+        else:
+            st.success(f"{round(score*100,2)}% - Good Match ✅")
+
+        # Missing skills
         missing_skills = get_missing_skills(expanded_resume, expanded_jd)
 
         st.subheader("Missing Skills:")
