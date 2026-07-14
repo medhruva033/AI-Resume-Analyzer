@@ -3,7 +3,7 @@
 Analyze any resume against a job description and get a match score + missing skills.
 
 ## Features
-- PDF text extraction (pdfplumber)
+- PDF text  extraction (pdfplumber)
 - NLP preprocessing (spaCy)
 - Hybrid similarity (TF-IDF + SequenceMatcher)
 - Missing skills detection
