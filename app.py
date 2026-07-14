@@ -102,7 +102,7 @@ if uploaded_file is not None and job_description:
         expanded_resume = expand_keywords(clean_resume)
         expanded_jd = expand_keywords(clean_jd)
 
-        st.success("Text Processed Successfully ✅")
+        st.success("text Processed Successfully ✅")
 
         # 🔥 USE COMBINED SIMILARITY (FIXED)
         score = calculate_similarity(resume_text.lower(), job_description.lower())
