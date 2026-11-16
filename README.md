@@ -20,7 +20,7 @@ An AI-powered resume analysis platform that helps job seekers evaluate their res
 - Generate resume improvement recommendations
 
 ### 🎯 ATS & Job Matching
-- Calculate ATS compatibility score
+- Calculate ATS compatibility score 
 - Parse job descriptions
 - Compare resume content with job requirements
 - Identify matching and missing skills
