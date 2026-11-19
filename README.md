@@ -1,4 +1,4 @@
-# AI Resume Analyzer
+ # AI Resume Analyzer
 
 An AI-powered resume analysis platform that helps job seekers evaluate their resumes against job descriptions, identify skill gaps, understand ATS compatibility, and improve their resumes through actionable recommendations.
 
